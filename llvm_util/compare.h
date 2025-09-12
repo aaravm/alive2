@@ -10,6 +10,8 @@
 
 namespace llvm_util {
 
+// std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *fn2);
+
 struct Verifier {
   llvm::TargetLibraryInfoWrapperPass &TLI;
   smt::smt_initializer &smt_init;

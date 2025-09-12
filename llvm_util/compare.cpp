@@ -7,6 +7,7 @@
 #include "smt/smt.h"
 #include "tools/transform.h"
 #include "util/config.h"
+#include "lean/pattern_match.h"
 
 #include <sstream>
 #include <utility>
@@ -43,19 +44,30 @@ Results verify(llvm::Function &F1, llvm::Function &F2,
                llvm::TargetLibraryInfoWrapperPass &TLI,
                smt::smt_initializer &smt_init, ostream &out,
                bool print_transform, bool always_verify) {
+                
   auto fn1 = llvm2alive(F1, TLI.getTLI(F1), true);
   if (!fn1)
     return Results::Error("Could not translate '" + F1.getName().str() +
                           "' to Alive IR\n");
+  out << "\nSource function in Alive IR:\n";
+  fn1->print(out);
 
   auto fn2 = llvm2alive(F2, TLI.getTLI(F2), false, fn1->getGlobalVars());
   if (!fn2)
     return Results::Error("Could not translate '" + F2.getName().str() +
                           "' to Alive IR\n");
+  out << "\nTarget function in Alive IR:\n";
+  fn2->print(out);
 
+  // Call analyzeAliveFunctions before the moves
+  std::string proof = lean::analyzeAliveFunctions(&*fn1, &*fn2);
+  out << "\nAnalysis Result:\n" << proof << "\n";
+  
   Results r;
   r.t.src = std::move(*fn1);
   r.t.tgt = std::move(*fn2);
+  
+
 
   if (!always_verify) {
     stringstream ss1, ss2;
@@ -97,6 +109,11 @@ Results verify(llvm::Function &F1, llvm::Function &F2,
 } // namespace
 
 bool Verifier::compareFunctions(llvm::Function &F1, llvm::Function &F2) {
+  // llvm::errs() << "Source function:\n";
+  // F1.print(llvm::errs());
+  // llvm::errs() << "\nTarget function:\n";
+  // F2.print(llvm::errs());
+
   auto r = verify(F1, F2, TLI, smt_init, out, !config::quiet, always_verify);
   if (r.status == Results::ERROR) {
     out << "ERROR: " << r.error;
