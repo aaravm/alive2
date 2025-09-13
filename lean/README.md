@@ -88,13 +88,6 @@ lean/
    - Pattern: Matches instructions like `%result = mul i32 %x, 0`
    - Proves that multiplying any number by zero results in zero
 
-
-## How It Works
-
-1. The system analyzes LLVM IR functions using pattern matching (`pattern_match.cpp`)
-2. When a pattern is detected, it runs the corresponding Lean proof file
-3. The proof output is captured and saved to a timestamped file in the `proofs_generated` directory
-
 ## Sample Output
 
 ```
@@ -149,51 +142,7 @@ Summary:
 
 <img width="1280" height="472" alt="image" src="https://github.com/user-attachments/assets/5491eb76-6aea-4777-b428-e5538bbd660b" />
 
-## Generated Proofs
-
-Proofs are automatically generated and saved with the following naming convention:
-
-```
-proofs_generated/proof_YYYYMMDD_HHMMSS.txt
-```
-
-Each proof file contains:
-
-- The captured output from Lean theorem prover
-- Timestamp of generation
-- Type of optimization proved
-
-
-## Generated Proofs
-
-Proofs are automatically generated and saved with the following naming convention:
-
-```
-proofs_generated/proof_YYYYMMDD_HHMMSS.txt
-```
-
-Each proof file contains:
-
-- The captured output from Lean theorem prover
-- Timestamp of generation
-- Type of optimization proved
-
-
-## Generated Proofs
-
-Proofs are automatically generated and saved with the following naming convention:
-
-```
-proofs_generated/proof_YYYYMMDD_HHMMSS.txt
-```
-
-Each proof file contains:
-
-- The captured output from Lean theorem prover
-- Timestamp of generation
-- Type of optimization proved
-
-
+   
 ## Dependencies
 
 - Lean 4 (must be installed and available in PATH)
