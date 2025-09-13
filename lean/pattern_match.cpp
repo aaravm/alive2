@@ -8,6 +8,7 @@
 #include <fstream>
 #include <chrono>
 #include <iomanip>
+#include <regex>
 
 namespace lean {
 
@@ -35,51 +36,60 @@ std::string execCommand(const std::string& cmd) {
 }
 
 std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *fn2) {
-  std::stringstream ss, fn1_ss, fn2_ss;
-  // return fn1_ss;
-  // Get full function representation
-  fn1->print(fn1_ss);
-  fn2->print(fn2_ss);
+    std::stringstream ss, fn1_ss, fn2_ss;
+    // return fn1_ss;
+    // Get full function representation
+    fn1->print(fn1_ss);
+    fn2->print(fn2_ss);
 
-  ss << "Analysis of functions:\n";
-  ss << "Source function name: " << fn1->getName() << "\n";
-  ss << "Source function contents:\n" << fn1_ss.str() << "\n";
-  ss << "Target function name: " << fn2->getName() << "\n";
-  ss << "Target function contents:\n" << fn2_ss.str() << "\n";
+    ss << "Analysis of functions:\n";
+    ss << "Source function name: " << fn1->getName() << "\n";
+    ss << "Source function contents:\n" << fn1_ss.str() << "\n";
+    ss << "Target function name: " << fn2->getName() << "\n";
+    ss << "Target function contents:\n" << fn2_ss.str() << "\n";
 
+    // Regex to match "add i32 %..., 0"
+    std::regex pattern(R"(%\w+\s*=\s*add\s+i32\s+%\w+,\s*0)");
 
-try {
-    // Use the CMake-provided paths
-    std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
-                         std::string(LEAN_PROJECT_PATH) + "/MyProject.lean";
-    std::string output = execCommand(command);
+    // Convert stringstream to string for regex search
+    std::string fn1_content = fn1_ss.str();
+    if (std::regex_search(fn1_content, pattern)) {
 
-    std::cout << "Captured Output:\n" << output << std::endl;
+        try {
+            // Use the CMake-provided paths
+            std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
+                                std::string(LEAN_PROJECT_PATH) + "/MyProject.lean";
+            std::string output = execCommand(command);
 
-    // Generate a timestamp for the filename
-    auto now = std::chrono::system_clock::now();
-    auto in_time_t = std::chrono::system_clock::to_time_t(now);
-    std::stringstream ss_time;
-    ss_time << std::put_time(std::localtime(&in_time_t), "%Y%m%d_%H%M%S");
-    std::string timestamp = ss_time.str();
+            std::cout << "Captured Output:\n" << output << std::endl;
 
-    // Use the CMake-provided output directory
-    std::string filename = std::string(PROOFS_OUTPUT_DIR) + "/proof_" + timestamp + ".txt";
+            // Generate a timestamp for the filename
+            auto now = std::chrono::system_clock::now();
+            auto in_time_t = std::chrono::system_clock::to_time_t(now);
+            std::stringstream ss_time;
+            ss_time << std::put_time(std::localtime(&in_time_t), "%Y%m%d_%H%M%S");
+            std::string timestamp = ss_time.str();
 
-    // Save the output to a file
-    std::ofstream outfile(filename);
-    if (outfile.is_open()) {
-        outfile << output;
-        outfile.close();
-    } else {
-        std::cerr << "Error: Unable to open file for writing: " << filename << "\n";
+            // Use the CMake-provided output directory
+            std::string filename = std::string(PROOFS_OUTPUT_DIR) + "/proof_" + timestamp + ".txt";
+
+            // Save the output to a file
+            std::ofstream outfile(filename);
+            if (outfile.is_open()) {
+                outfile << output;
+                outfile.close();
+            } else {
+                std::cerr << "Error: Unable to open file for writing: " << filename << "\n";
+            }
+
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << '\n';
+        }
+
     }
 
-} catch (const std::exception& e) {
-    std::cerr << "Error: " << e.what() << '\n';
-}
-
-  return ss.str();
+    // Always return the analysis string, regardless of whether the pattern matched
+    return ss.str();
 }
 
 // fn pattern_match(){
