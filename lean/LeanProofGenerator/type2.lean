@@ -1,7 +1,7 @@
-theorem mul_zero_nat (x : Nat) : x * 0 = 0 := by
-  exact Nat.mul_zero x
+theorem mul_one_nat (x : Nat) : x * 1 = x := by
+  exact Nat.mul_one x
 
-#print mul_zero_nat
+#print mul_one_nat
 
 def main (args : List String) : IO UInt32 := do
   IO.println s!"ends{args}"
