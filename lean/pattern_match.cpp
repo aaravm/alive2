@@ -89,7 +89,7 @@ std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *f
             std::cerr << "Error: " << e.what() << '\n';
         }
 
-    } else if (true) { //type2 : x * 1 = x
+    } else if (std::regex_search(fn1_content, mul_one)) { //type2 : x * 1 = x
         try {
             std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
                                 std::string(LEAN_PROJECT_PATH) + "/type2.lean";
@@ -114,7 +114,7 @@ std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *f
         } catch (const std::exception& e) {
             std::cerr << "Error: " << e.what() << '\n';
         }
-    } else if (true) { //type3 : x * 0 = 0
+    } else if (std::regex_search(fn1_content, mul_zero)) { //type3 : x * 0 = 0
         try {
             std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
                                 std::string(LEAN_PROJECT_PATH) + "/type3.lean";
