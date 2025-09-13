@@ -42,18 +42,21 @@ std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *f
     fn1->print(fn1_ss);
     fn2->print(fn2_ss);
 
-    ss << "Analysis of functions:\n";
-    ss << "Source function name: " << fn1->getName() << "\n";
-    ss << "Source function contents:\n" << fn1_ss.str() << "\n";
-    ss << "Target function name: " << fn2->getName() << "\n";
-    ss << "Target function contents:\n" << fn2_ss.str() << "\n";
+    // ss << "Analysis of functions:\n";
+    // ss << "Source function name: " << fn1->getName() << "\n";
+    // ss << "Source function contents:\n" << fn1_ss.str() << "\n";
+    // ss << "Target function name: " << fn2->getName() << "\n";
+    // ss << "Target function contents:\n" << fn2_ss.str() << "\n";
+    ss << "Proof Generated:\n";
 
-    // Regex to match "add i32 %..., 0"
-    std::regex pattern(R"(%\w+\s*=\s*add\s+i32\s+%\w+,\s*0)");
+    // Regex patterns
+    std::regex add_zero(R"(%\w+\s*=\s*add\s+i32\s+%\w+,\s*0)");
+    std::regex mul_zero(R"(%\w+\s*=\s*mul\s+i32\s+%\w+,\s*0)");
+    std::regex mul_one (R"(%\w+\s*=\s*mul\s+i32\s+%\w+,\s*1)");
 
     // Convert stringstream to string for regex search
     std::string fn1_content = fn1_ss.str();
-    if (std::regex_search(fn1_content, pattern)) { // for type1: x + 0 = x
+    if (std::regex_search(fn1_content, add_zero)) {
 
         try {
             // Use the CMake-provided paths
