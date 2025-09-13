@@ -145,6 +145,9 @@ Summary:
   0 Alive2 errors
 ```
 
+## Architecture
+
+<img width="1280" height="472" alt="image" src="https://github.com/user-attachments/assets/5491eb76-6aea-4777-b428-e5538bbd660b" />
 
 ## Generated Proofs
 
@@ -160,13 +163,35 @@ Each proof file contains:
 - Timestamp of generation
 - Type of optimization proved
 
-## Configuration
 
-The system uses several CMake-provided variables:
+## Generated Proofs
 
-- `LEAN_EXECUTABLE`: Path to the Lean executable
-- `LEAN_PROJECT_PATH`: Path to the directory containing Lean proof files
-- `PROOFS_OUTPUT_DIR`: Directory where generated proofs are stored
+Proofs are automatically generated and saved with the following naming convention:
+
+```
+proofs_generated/proof_YYYYMMDD_HHMMSS.txt
+```
+
+Each proof file contains:
+
+- The captured output from Lean theorem prover
+- Timestamp of generation
+- Type of optimization proved
+
+
+## Generated Proofs
+
+Proofs are automatically generated and saved with the following naming convention:
+
+```
+proofs_generated/proof_YYYYMMDD_HHMMSS.txt
+```
+
+Each proof file contains:
+
+- The captured output from Lean theorem prover
+- Timestamp of generation
+- Type of optimization proved
 
 
 ## Dependencies
@@ -195,6 +220,23 @@ The system uses several CMake-provided variables:
      ```bash
      alive-tv src_add_0.ll tgt_add_0.ll
      ```
+
+
+
+## Generated Proofs
+
+Proofs are automatically generated and saved with the following naming convention:
+
+```
+proofs_generated/proof_YYYYMMDD_HHMMSS.txt
+```
+
+Each proof file contains:
+
+- The captured output from Lean theorem prover
+- Timestamp of generation
+- Type of optimization proved
+
 
 ## Future Improvements
 
