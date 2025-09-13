@@ -4,6 +4,8 @@ This directory contains the integration between Alive2 and the Lean theorem prov
 
 This is a small pipeline to turn easily-detected IR optimizations into human- or machine-checkable proof witnesses in Lean. Example: detect `%r = add i32 %x, 0` in IR → emit a Lean theorem `x + 0 = x` and print it. This repo shows a minimal, practical way to do that.
 
+<b> PPT LINK: </b> [canva presentation](https://www.canva.com/design/DAGRcBeQffY/tw_6S0cgtlL65YDS26bPdA/edit?utm_content=DAGRcBeQffY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
 ## Directory Structure
 
 ```
