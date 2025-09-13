@@ -73,6 +73,13 @@ find_package(ZLIB)
 find_package(Z3 4.8.5 REQUIRED)
 include_directories(${Z3_INCLUDE_DIR})
 
+# Find Lean executable
+find_package(Lean REQUIRED)
+message(STATUS "Lean executable: ${LEAN_EXECUTABLE}")
+
+# Define the path to the Lean project
+set(LEAN_PROJECT_PATH "${CMAKE_SOURCE_DIR}/lean/LeanProofGenerator")
+
 find_program(RE2C re2c)
 if (RE2C)
   message(STATUS "RE2C: ${RE2C}")
