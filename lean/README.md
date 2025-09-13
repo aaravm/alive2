@@ -169,27 +169,6 @@ The system uses several CMake-provided variables:
 - `PROOFS_OUTPUT_DIR`: Directory where generated proofs are stored
 
 
-## Usage
-
-1. **Pattern Detection**:
-   ```cpp
-   lean::analyzeAliveFunctions(fn1, fn2);
-   ```
-   This function analyzes LLVM IR functions and detects patterns requiring verification.
-
-2. **Proof Generation**:
-   - When a pattern is detected, the system automatically:
-     - Calls the appropriate Lean proof generator
-     - Saves the proof output with timestamp
-     - Returns analysis results
-
-3. **Testing**:
-   - Use test files from `Testing_files/` directory
-   - Run with alive-tv:
-     ```bash
-     alive-tv src_add_0.ll tgt_add_0.ll
-     ```
-
 ## Dependencies
 
 - Lean 4 (must be installed and available in PATH)
@@ -212,6 +191,10 @@ The system uses several CMake-provided variables:
    cmake -G Ninja       -DLLVM_DIR=path-to-latest-llvm-build -DBUILD_TV=1 -DCMAKE_BUILD_TYPE=Release       ..
    ninja
    ```
+3. Run with alive-tv:
+     ```bash
+     alive-tv src_add_0.ll tgt_add_0.ll
+     ```
 
 ## Future Improvements
 
