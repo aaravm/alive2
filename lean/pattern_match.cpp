@@ -63,7 +63,8 @@ try {
     ss_time << std::put_time(std::localtime(&in_time_t), "%Y%m%d_%H%M%S");
     std::string timestamp = ss_time.str();
 
-    std::string filename = "proofs_generated/proof_" + timestamp + ".txt";
+    // Use the CMake-provided output directory
+    std::string filename = std::string(PROOFS_OUTPUT_DIR) + "/proof_" + timestamp + ".txt";
 
     // Save the output to a file
     std::ofstream outfile(filename);
