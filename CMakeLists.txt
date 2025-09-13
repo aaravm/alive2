@@ -89,6 +89,8 @@ add_custom_command(OUTPUT "${PROJECT_BINARY_DIR}/tools/alive_lexer.cpp"
 include_directories(${PROJECT_SOURCE_DIR})
 include_directories(${PROJECT_BINARY_DIR})
 
+add_subdirectory(lean)
+
 set(IR_SRCS
   ir/attrs.cpp
   ir/constant.cpp
@@ -196,6 +198,7 @@ if (BUILD_LLVM_UTILS OR BUILD_TV)
   )
 
   add_library(llvm_util STATIC ${LLVM_UTIL_SRCS})
+  target_link_libraries(llvm_util PUBLIC lean)
   set(ALIVE_LIBS_LLVM llvm_util ${ALIVE_LIBS})
 
   add_llvm_executable(alive-tv

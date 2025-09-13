@@ -1,4 +1,5 @@
 add_llvm_library(tv MODULE tv.cpp)
+target_link_libraries(tv PRIVATE lean)
 
 configure_file(
   ${PROJECT_SOURCE_DIR}/scripts/alivecc.in
