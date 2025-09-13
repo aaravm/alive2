@@ -53,12 +53,12 @@ std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *f
 
     // Convert stringstream to string for regex search
     std::string fn1_content = fn1_ss.str();
-    if (std::regex_search(fn1_content, pattern)) {
+    if (std::regex_search(fn1_content, pattern)) { // for type1: x + 0 = x
 
         try {
             // Use the CMake-provided paths
             std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
-                                std::string(LEAN_PROJECT_PATH) + "/MyProject.lean";
+                                std::string(LEAN_PROJECT_PATH) + "/type1.lean";
             std::string output = execCommand(command);
 
             std::cout << "Captured Output:\n" << output << std::endl;
@@ -86,6 +86,56 @@ std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *f
             std::cerr << "Error: " << e.what() << '\n';
         }
 
+    } else if (true) { //type2 : x * 1 = x
+        try {
+            std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
+                                std::string(LEAN_PROJECT_PATH) + "/type2.lean";
+            std::string output = execCommand(command);
+
+            std::cout << "Captured Output:\n" << output << std::endl;
+
+            auto now = std::chrono::system_clock::now();
+            auto in_time_t = std::chrono::system_clock::to_time_t(now);
+            std::stringstream ss_time;
+            ss_time << std::put_time(std::localtime(&in_time_t), "%Y%m%d_%H%M%S");
+            std::string timestamp = ss_time.str();
+
+            std::string filename = std::string(PROOFS_OUTPUT_DIR) + "/proof_" + timestamp + ".txt";
+            std::ofstream outfile(filename);
+            if (outfile.is_open()) {
+                outfile << output;
+                outfile.close();
+            } else {
+                std::cerr << "Error: Unable to open file for writing: " << filename << "\n";
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << '\n';
+        }
+    } else if (true) { //type3 : x * 0 = 0
+        try {
+            std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
+                                std::string(LEAN_PROJECT_PATH) + "/type3.lean";
+            std::string output = execCommand(command);
+
+            std::cout << "Captured Output:\n" << output << std::endl;
+
+            auto now = std::chrono::system_clock::now();
+            auto in_time_t = std::chrono::system_clock::to_time_t(now);
+            std::stringstream ss_time;
+            ss_time << std::put_time(std::localtime(&in_time_t), "%Y%m%d_%H%M%S");
+            std::string timestamp = ss_time.str();
+
+            std::string filename = std::string(PROOFS_OUTPUT_DIR) + "/proof_" + timestamp + ".txt";
+            std::ofstream outfile(filename);
+            if (outfile.is_open()) {
+                outfile << output;
+                outfile.close();
+            } else {
+                std::cerr << "Error: Unable to open file for writing: " << filename << "\n";
+            }
+        } catch (const std::exception& e) {
+            std::cerr << "Error: " << e.what() << '\n';
+        }
     }
 
     // Always return the analysis string, regardless of whether the pattern matched
