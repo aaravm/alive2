@@ -5,6 +5,9 @@
 #include <memory>
 #include <stdexcept>
 #include <array>
+#include <fstream>
+#include <chrono>
+#include <iomanip>
 
 namespace lean {
 
@@ -37,21 +40,39 @@ std::string analyzeAliveFunctions(const IR::Function *fn1, const IR::Function *f
   // Get full function representation
   fn1->print(fn1_ss);
   fn2->print(fn2_ss);
- 
+
   ss << "Analysis of functions:\n";
   ss << "Source function name: " << fn1->getName() << "\n";
   ss << "Source function contents:\n" << fn1_ss.str() << "\n";
   ss << "Target function name: " << fn2->getName() << "\n";
   ss << "Target function contents:\n" << fn2_ss.str() << "\n";
-  
+
 
 try {
     // Use the CMake-provided paths
-    std::string command = std::string(LEAN_EXECUTABLE) + " --run " + 
+    std::string command = std::string(LEAN_EXECUTABLE) + " --run " +
                          std::string(LEAN_PROJECT_PATH) + "/MyProject.lean";
     std::string output = execCommand(command);
 
     std::cout << "Captured Output:\n" << output << std::endl;
+
+    // Generate a timestamp for the filename
+    auto now = std::chrono::system_clock::now();
+    auto in_time_t = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss_time;
+    ss_time << std::put_time(std::localtime(&in_time_t), "%Y%m%d_%H%M%S");
+    std::string timestamp = ss_time.str();
+
+    std::string filename = "proofs_generated/proof_" + timestamp + ".txt";
+
+    // Save the output to a file
+    std::ofstream outfile(filename);
+    if (outfile.is_open()) {
+        outfile << output;
+        outfile.close();
+    } else {
+        std::cerr << "Error: Unable to open file for writing: " << filename << "\n";
+    }
 
 } catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << '\n';
