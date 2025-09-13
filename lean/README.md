@@ -1,10 +1,28 @@
 # Lean Integration for Alive2
 
-This directory contains the integration between Alive2 and the Lean theorem prover, enabling formal verification and proof generation for LLVM IR transformations.
+This project aims to bridge compiler optimization validation with interactive theorem proving.
+Alive2 already checks LLVM optimizations for correctness using SMT solvers. Our goal is to automatically generate machine-checked Lean proofs for compiler optimizations, scaling from toy peepholes to optimization pipelines like -O2.
 
-This is a small pipeline to turn easily-detected IR optimizations into human- or machine-checkable proof witnesses in Lean. Example: detect `%r = add i32 %x, 0` in IR → emit a Lean theorem `x + 0 = x` and print it. This repo shows a minimal, practical way to do that.
+Instead of "just checking" that an optimization is correct, we want to produce a formal proof artifact in Lean that certifies the equivalence of source and target programs under all environments.
+
+Ultimately, this project envisions a world where:
+
+Every LLVM optimization ships with a Lean proof certificate.
+
+Compiler trust is shifted from heuristic validation to mathematical certainty.
+
+Proof artifacts can be composed, audited, and extended to future verification frameworks.
 
 <b> PPT LINK: </b> [canva presentation](https://www.canva.com/design/DAGRcBeQffY/tw_6S0cgtlL65YDS26bPdA/edit?utm_content=DAGRcBeQffY&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+
+## Big picture
+
+This project is a stepping stone toward a formally verified LLVM, where correctness is not only checked by an SMT solver but proven in an interactive theorem prover.
+
+Alive2’s SMT engine tells us "this optimization looks safe."
+Our extended toolchain will tell us:
+"Here’s a Lean proof. Trust mathematics, not heuristics."
+
 
 ## Directory Structure
 
@@ -77,6 +95,57 @@ lean/
 2. When a pattern is detected, it runs the corresponding Lean proof file
 3. The proof output is captured and saved to a timestamped file in the `proofs_generated` directory
 
+## Sample Output
+
+```
+Source function in Alive IR:
+define i32 @f(i32 %x) {
+#0:
+  %r = add i32 %x, 0
+  ret i32 %r
+}
+
+Target function in Alive IR:
+define i32 @f(i32 %x) {
+#0:
+  ret i32 %x
+}
+Captured Output:
+theorem zero_add : ∀ (x : Nat), 0 +ₘ x = x :=
+fun x =>
+  Nat.recAux (of_eq_true (eq_self 0))
+    (fun x ih =>
+      of_eq_true
+        (Eq.trans (Eq.trans (congrArg (fun x_1 => x_1.succ = x + 1) ih) Nat.add_left_cancel_iff._simp_1) (eq_self 1)))
+    x
+ends[]
+
+
+Analysis Result:
+Proof Generated:
+
+
+----------------------------------------
+define i32 @f(i32 %x) {
+#0:
+  %r = add i32 %x, 0
+  ret i32 %r
+}
+=>
+define i32 @f(i32 %x) {
+#0:
+  ret i32 %x
+}
+Transformation seems to be correct!
+
+Summary:
+  1 correct transformations
+  0 incorrect transformations
+  0 failed-to-prove transformations
+  0 Alive2 errors
+```
+
+
 ## Generated Proofs
 
 Proofs are automatically generated and saved with the following naming convention:
@@ -140,21 +209,13 @@ The system uses several CMake-provided variables:
 2. Build the project:
    ```bash
    cd build
-   cmake -DLLVM_DIR=/path/to/llvm/cmake -DBUILD_TV=1 ..
+   cmake -G Ninja       -DLLVM_DIR=path-to-latest-llvm-build -DBUILD_TV=1 -DCMAKE_BUILD_TYPE=Release       ..
    ninja
    ```
 
 ## Future Improvements
 
 - [ ] Add more pattern matching rules
-- [ ] Enhance proof generation capabilities
-- [ ] Improve error handling and reporting
-- [ ] Add more comprehensive test cases
+- [ ] Optimize the process of finding which standard optimzation to use. (Currently, we are bruteforcing)
 - [ ] Extend Lean theorem proving capabilities
-
-## Contributing
-
-1. Follow the existing code structure
-2. Add tests for new functionality
-3. Update documentation accordingly
-4. Ensure all tests pass before submitting changesk
+- [ ] Extend the proving capabilitis to other OS
